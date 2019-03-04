@@ -13,9 +13,32 @@
 <script src="https://d3js.org/d3-time.v1.min.js"></script>
 <script src="https://d3js.org/d3-time-format.v2.min.js"></script>
 <script src="https://d3js.org/d3-scale.v2.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </head>
 <body>
 <div id="chart"></div>
+
+<div class="modal" id="myModal" tabindex="-1" role="dialog">
+	<div class="modal-dialog modal-lg" role="document">
+	  <div class="modal-content">
+		<div class="modal-header">
+		  <h5 class="modal-title">Log Line</h5>
+		  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		  </button>
+		</div>
+		<div class="modal-body">
+		  <pre><code id="myModalContent"></code></pre>
+		</div>
+		<div class="modal-footer">
+		  <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+		</div>
+	  </div>
+	</div>
+  </div>
 
 <script>
 var loc = window.location.href;
@@ -24,6 +47,27 @@ var data = fetch('./data.json')
 	.then(data => {
 		const el = document.querySelector('#chart');
 
+		var segmentFunc = function(segment){
+			for (var i in data) {
+				if (data[i].group == segment.group) {
+					var groupdata = data[i].data
+					for (var j in groupdata) {
+						if (groupdata[j].label == segment.label) {
+							labeldata = groupdata[j].data
+							for (var k in labeldata) {
+								var startDate = new Date(labeldata[k].timeRange[0])
+								var endDate = new Date(labeldata[k].timeRange[1])
+								if (startDate.getTime() == segment.timeRange[0].getTime() &&
+								    endDate.getTime() == segment.timeRange[1].getTime()) {
+										$('#myModalContent').text(labeldata[k].extended)
+										$('#myModal').modal()
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 		const myChart = TimelinesChart();
 		var ordinalScale = d3.scaleOrdinal()
 			.domain(['Progressing','Available','Failing','Upgradeable','False'])
@@ -36,7 +80,8 @@ var data = fetch('./data.json')
 			rightMargin(550).
 			sortAlpha().
 			maxHeight(10000).
-			zColorScale(ordinalScale)
+			zColorScale(ordinalScale).
+			onSegmentClick(segmentFunc)
 			(el);
 });
 
