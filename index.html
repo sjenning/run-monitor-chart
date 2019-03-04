@@ -1,0 +1,48 @@
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>run-monitor chart</title>
+<script src="//unpkg.com/timelines-chart"></script>
+<script src="https://d3js.org/d3-array.v1.min.js"></script>
+<script src="https://d3js.org/d3-collection.v1.min.js"></script>
+<script src="https://d3js.org/d3-color.v1.min.js"></script>
+<script src="https://d3js.org/d3-format.v1.min.js"></script>
+<script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
+<script src="https://d3js.org/d3-time.v1.min.js"></script>
+<script src="https://d3js.org/d3-time-format.v2.min.js"></script>
+<script src="https://d3js.org/d3-scale.v2.min.js"></script>
+</head>
+<body>
+<div id="chart"></div>
+
+<script>
+var loc = window.location.href;
+var data = fetch('./data.json')
+	.then(response => response.json())
+	.then(data => {
+		const el = document.querySelector('#chart');
+
+		const myChart = TimelinesChart();
+		var ordinalScale = d3.scaleOrdinal()
+			.domain(['Progressing','Available','Failing','Upgradeable','False'])
+			.range(['#ceba76','#326ce5','#b65049','#32b8b6','#ffffff']);
+		myChart.
+			data(data).
+			zQualitative(true).
+			enableAnimations(false).
+			leftMargin(320).
+			rightMargin(550).
+			sortAlpha().
+			maxHeight(10000).
+			zColorScale(ordinalScale)
+			(el);
+});
+
+
+
+
+</script>
+</body>
+</html>
