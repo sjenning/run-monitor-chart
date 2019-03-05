@@ -70,8 +70,8 @@ var data = fetch('./data.json')
 		}
 		const myChart = TimelinesChart();
 		var ordinalScale = d3.scaleOrdinal()
-			.domain(['Progressing','Available','Failing','Upgradeable','False'])
-			.range(['#ceba76','#326ce5','#b65049','#32b8b6','#ffffff']);
+			.domain(['Progressing','Available','Failing','Upgradeable','False','Unknown'])
+			.range(['#ceba76','#326ce5','#b65049','#32b8b6','#ffffff','#bbbbbb']);
 		myChart.
 			data(data).
 			zQualitative(true).

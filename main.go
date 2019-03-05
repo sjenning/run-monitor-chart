@@ -37,10 +37,10 @@ func main() {
 			operator := match[2]
 			conditionType := match[3]
 			value := match[4]
-			if value == "False" {
-				store.Add(operator, conditionType, "False", text, timestamp)
-			} else {
+			if value == "True" {
 				store.Add(operator, conditionType, conditionType, text, timestamp)
+			} else {
+				store.Add(operator, conditionType, value, text, timestamp)
 			}
 		}
 	}
